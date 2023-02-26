@@ -89,4 +89,53 @@ const createDesign = async(req,res) => {
     }
 }
 
-module.exports = {createUser,updateUser,createDesign}
+const getDesign = async(req,res) => {
+    try {
+        res.setHeader("Content-Type", "application/json");
+        if(req.query.designId && req.headers.apikey === API_KEY){
+           const design = await Design.findOne({designId:req.query.designId})
+           res.status(200).json(design)
+        }
+        else {
+            res.status(400).json({error:"Not Authorized"})
+        }
+      } catch (error) {
+        res.status(400).json({error:error.message})
+        
+      }
+}
+
+const getUser = async(req,res) => {
+    try {
+        res.setHeader("Content-Type", "application/json");
+        if(req.query.userId && req.headers.apikey === API_KEY){
+           const user = await User.findOne({userId:req.query.userId})
+           res.status(200).json(user)
+        }
+        else {
+            res.status(400).json({error:"Not Authorized"})
+        }
+      } catch (error) {
+        res.status(400).json({error:error.message})
+        
+      }
+}
+
+const getDesigns = async(req,res) => {
+    try {
+        res.setHeader("Content-Type", "application/json");
+        if(req.headers.apikey === API_KEY){
+           Design.collection.find().toArray((err, data) => {
+            res.status(200).json(data);
+          });
+        }
+        else {
+            res.status(400).json({error:"Not Authorized"})
+        }
+      } catch (error) {
+        res.status(400).json({error:error.message})
+        
+      }
+}
+
+module.exports = {createUser,updateUser,createDesign,getDesign,getUser,getDesigns}
